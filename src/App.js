@@ -18,13 +18,16 @@ const App = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [cameraMode, setCameraMode] = useState('photo'); // photo, video, portrait
   const [permissionRequested, setPermissionRequested] = useState(false);
-  const [cameraReady, setCameraReady] = useState(false);
+  const [cameraReady, setCameraReady] = useState(!isCapacitor()); // Web is ready immediately
+  const [showPermissionInfo, setShowPermissionInfo] = useState(false);
 
   // Request camera permissions on app start for mobile
   useEffect(() => {
     const requestInitialPermissions = async () => {
       if (isCapacitor() && !permissionRequested) {
         setPermissionRequested(true);
+        setShowPermissionInfo(true); // Show info while requesting
+        
         try {
           console.log('🎥 App started - requesting camera permissions...');
           console.log('📱 Detected Capacitor platform:', window.Capacitor?.platform);
@@ -65,19 +68,22 @@ const App = () => {
               if (permissionResult.camera === 'granted') {
                 permissionsGranted = true;
                 console.log('🎉 Camera permissions granted by user!');
-                // Signal that camera is ready to initialize
                 setCameraReady(true);
+                setShowPermissionInfo(false); // Hide info on success
               } else if (permissionResult.camera === 'denied') {
                 console.log('❌ Camera permissions denied by user');
+                setShowPermissionInfo(false);
               } else if (permissionResult.camera === 'prompt-with-rationale') {
                 console.log('ℹ️ Need to show rationale to user');
-                // Try requesting again after showing rationale
                 const secondRequest = await Camera.requestPermissions({
                   permissions: ['camera']
                 });
                 if (secondRequest.camera === 'granted') {
                   permissionsGranted = true;
                   setCameraReady(true);
+                  setShowPermissionInfo(false);
+                } else {
+                  setShowPermissionInfo(false);
                 }
               }
             } catch (error) {
@@ -101,13 +107,14 @@ const App = () => {
             }
           }
           
-          // Don't show any custom alerts - let the system handle permissions
+          // Handle final permission status
           if (!permissionsGranted) {
             console.warn('⚠️ Camera permissions not granted');
+            setShowPermissionInfo(false);
           } else {
             console.log('🎉 Camera permissions successfully obtained');
-            // Ensure camera ready state is set
             setCameraReady(true);
+            setShowPermissionInfo(false);
           }
         } catch (error) {
           console.error('💥 Error requesting initial permissions:', error);
@@ -134,6 +141,33 @@ const App = () => {
 
   return (
     <div className="app">
+      {showPermissionInfo && (
+        <div className="permission-info-overlay">
+          <div className="permission-info-card">
+            <h3>🎥 Yêu cầu quyền camera</h3>
+            <p>Đang đợi bạn cấp quyền camera qua popup hệ thống Android...</p>
+            <p className="permission-note">
+              <strong>Lưu ý:</strong> Popup cấp quyền chỉ xuất hiện khi app chạy trên điện thoại Android thực, 
+              không phải trên web browser này.
+            </p>
+            <button 
+              onClick={() => setShowPermissionInfo(false)}
+              className="permission-close-btn"
+            >
+              Đóng
+            </button>
+          </div>
+        </div>
+      )}
+      
+      {!isCapacitor() && (
+        <div className="web-info-banner">
+          <p>
+            ℹ️ Đang chạy trên web - Để test popup cấp quyền, cần build thành APK và cài trên Android
+          </p>
+        </div>
+      )}
+      
       {currentView === 'camera' && (
         <CameraScreen
           onPhotoCapture={handlePhotoCapture}

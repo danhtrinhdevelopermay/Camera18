@@ -103,6 +103,12 @@ src/
   - User có thể cấp quyền trực tiếp qua system popup, không cần vào cài đặt
   - ✅ **CAMERA HOẠT ĐỘNG**: Live camera preview hiển thị ngay sau khi cấp quyền
   - Auto-initialization với cameraReady state, không cần restart app
+- 2025-08-10: GIẢI THÍCH PERMISSION HANDLING CHO USER
+  - Thêm thông báo rõ ràng: popup permission chỉ xuất hiện trên Android thực, không phải web
+  - Tạo permission info overlay với styling iOS-like
+  - Web info banner giải thích cần build APK để test permissions
+  - Tạo tài liệu HOW-TO-TEST-PERMISSIONS.md với hướng dẫn chi tiết
+  - Improve UX với cameraReady state tự động true cho web environment
 
 ## APK Build Setup
 - ✅ GitHub Actions workflow (.github/workflows/build-android.yml)
