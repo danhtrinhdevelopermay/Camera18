@@ -100,13 +100,20 @@ const CameraScreen = ({
         console.log('Starting Capacitor camera preview...');
         await CameraPreview.start({
           position: isFrontCamera ? 'front' : 'rear',
-          width: window.innerWidth,
-          height: window.innerHeight,
-          toBack: true,
-          paddingBottom: 0,
-          rotateWhenOrientationChanged: true,
+          parent: 'cameraPreview', // Use specific element ID
+          className: 'cameraPreview',
+          width: Math.round(window.innerWidth),
+          height: Math.round(window.innerHeight * 0.75), // Leave space for controls
+          x: 0,
+          y: 0,
+          toBack: false, // Don't put to background
+          alpha: 1,
+          tapPhoto: false,
+          tapFocus: true,
+          previewDrag: false,
+          disableExifHeaderStripping: false,
           storeToFile: false,
-          disableExifHeaderStripping: false
+          enableZoom: true
         });
         console.log('Camera preview started successfully');
         return;

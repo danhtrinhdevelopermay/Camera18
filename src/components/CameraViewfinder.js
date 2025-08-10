@@ -92,9 +92,10 @@ const CameraViewfinder = forwardRef(({
       onWheel={handleWheel}
     >
       {isCapacitor() ? (
-        // Mobile - camera preview background, UI overlay on top
+        // Mobile - camera preview container
         <div className="mobile-camera-container">
-          {/* Camera preview renders behind via toBack: true */}
+          {/* Container for camera preview */}
+          <div id="cameraPreview" className="camera-preview-container"></div>
           <div className="camera-overlay-ui">
             <div className="camera-status">
               <small>Live Camera Preview</small>
