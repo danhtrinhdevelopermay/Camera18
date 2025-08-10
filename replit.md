@@ -101,6 +101,8 @@ src/
   - Build script và sync với Android platform hoàn tất
   - ✅ **THÀNH CÔNG**: App hiển thị native Android permission dialogs cho camera & microphone
   - User có thể cấp quyền trực tiếp qua system popup, không cần vào cài đặt
+  - ✅ **CAMERA HOẠT ĐỘNG**: Live camera preview hiển thị ngay sau khi cấp quyền
+  - Auto-initialization với cameraReady state, không cần restart app
 
 ## APK Build Setup
 - ✅ GitHub Actions workflow (.github/workflows/build-android.yml)
