@@ -94,7 +94,11 @@ src/
   - Sửa CameraScreen.js để check quyền trước khi start camera preview
   - Implement dual permission API: CameraPreview + Camera API
   - Thêm error handling và user messages khi quyền bị từ chối
-  - Sync Capacitor project với Android platform
+  - **CRITICAL FIX**: Sử dụng Camera.requestPermissions() để trigger native Android permission dialog
+  - Thay thế custom alert bằng system permission dialog
+  - Thêm Camera.checkPermissions() để kiểm tra trạng thái quyền hiện tại
+  - Handle permission states: granted, denied, prompt-with-rationale
+  - Build script và sync với Android platform hoàn tất
 
 ## APK Build Setup
 - ✅ GitHub Actions workflow (.github/workflows/build-android.yml)

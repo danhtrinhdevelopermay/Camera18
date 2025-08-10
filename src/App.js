@@ -3,9 +3,9 @@ import CameraScreen from './components/CameraScreen';
 import PhotoPreview from './components/PhotoPreview';
 import './styles/App.css';
 
-// Capacitor imports for permission handling
+// Capacitor imports for permission handling  
 import { CameraPreview } from '@capacitor-community/camera-preview';
-import { Camera } from '@capacitor/camera';
+import { Camera, CameraPermissionType } from '@capacitor/camera';
 import { Capacitor } from '@capacitor/core';
 
 const isCapacitor = () => {
@@ -31,41 +31,75 @@ const App = () => {
           // Try both permission APIs to ensure compatibility
           let permissionsGranted = false;
           
+          // Check current permissions first
+          console.log('📷 Checking current camera permissions...');
+          let needsPermission = true;
+          
           try {
-            // First try CameraPreview permissions
-            console.log('📷 Requesting CameraPreview permissions...');
-            const previewPermissions = await CameraPreview.requestPermissions();
-            console.log('✅ CameraPreview permissions result:', previewPermissions);
+            const currentPermissions = await Camera.checkPermissions();
+            console.log('Current permissions status:', currentPermissions);
             
-            if (previewPermissions.camera === 'granted') {
+            if (currentPermissions.camera === 'granted') {
+              needsPermission = false;
               permissionsGranted = true;
-              console.log('✅ CameraPreview permissions granted!');
+              console.log('✅ Camera permissions already granted');
             }
           } catch (error) {
-            console.log('❌ CameraPreview permissions failed, trying Camera API:', error);
+            console.log('❌ Error checking permissions:', error);
           }
           
-          // Also try Camera API permissions as fallback
-          if (!permissionsGranted) {
+          // Request permissions if needed - this will show system dialog
+          if (needsPermission) {
             try {
-              console.log('📷 Requesting Camera API permissions...');
-              const cameraPermissions = await Camera.requestPermissions();
-              console.log('✅ Camera API permissions result:', cameraPermissions);
+              console.log('📱 Requesting camera permissions (system dialog should appear)...');
               
-              if (cameraPermissions.camera === 'granted') {
+              // This will trigger the native Android permission dialog
+              const permissionResult = await Camera.requestPermissions({
+                permissions: ['camera']
+              });
+              
+              console.log('✅ Permission request result:', permissionResult);
+              
+              if (permissionResult.camera === 'granted') {
                 permissionsGranted = true;
-                console.log('✅ Camera API permissions granted!');
+                console.log('🎉 Camera permissions granted by user!');
+              } else if (permissionResult.camera === 'denied') {
+                console.log('❌ Camera permissions denied by user');
+              } else if (permissionResult.camera === 'prompt-with-rationale') {
+                console.log('ℹ️ Need to show rationale to user');
+                // Try requesting again after showing rationale
+                const secondRequest = await Camera.requestPermissions({
+                  permissions: ['camera']
+                });
+                if (secondRequest.camera === 'granted') {
+                  permissionsGranted = true;
+                }
               }
             } catch (error) {
-              console.log('❌ Camera API permissions failed:', error);
+              console.log('❌ Camera permission request failed:', error);
+            }
+          }
+          
+          // Also try CameraPreview as backup
+          if (!permissionsGranted) {
+            try {
+              console.log('📷 Trying CameraPreview permissions as fallback...');
+              const previewPermissions = await CameraPreview.requestPermissions();
+              console.log('CameraPreview permissions result:', previewPermissions);
+              
+              if (previewPermissions.camera === 'granted') {
+                permissionsGranted = true;
+                console.log('✅ CameraPreview permissions granted!');
+              }
+            } catch (error) {
+              console.log('❌ CameraPreview permissions also failed:', error);
             }
           }
           
           if (!permissionsGranted) {
-            console.warn('⚠️ Camera permissions not granted');
-            alert('Ứng dụng camera cần quyền truy cập camera để hoạt động.\n\n🔧 Vui lòng:\n1. Mở Cài đặt điện thoại\n2. Tìm "iOS Camera App"\n3. Cấp quyền Camera\n4. Khởi động lại ứng dụng');
+            console.warn('⚠️ All permission attempts failed');
           } else {
-            console.log('🎉 Camera permissions granted successfully');
+            console.log('🎉 Camera permissions successfully obtained');
           }
         } catch (error) {
           console.error('💥 Error requesting initial permissions:', error);

@@ -59,13 +59,37 @@ const CameraScreen = ({
         // Mobile: Request camera permissions first, then start preview
         console.log('Requesting camera permissions...');
         
-        // Explicitly request camera permissions
-        const permissions = await CameraPreview.requestPermissions();
-        console.log('Camera permissions result:', permissions);
+        // Check permissions first, don't request again if already handled in App.js
+        let hasPermission = false;
         
-        if (permissions.camera !== 'granted') {
-          console.error('Camera permission denied');
-          alert('Ứng dụng cần quyền truy cập camera để hoạt động. Vui lòng cấp quyền trong Cài đặt.');
+        try {
+          const currentPermissions = await Camera.checkPermissions();
+          console.log('Current camera permissions:', currentPermissions);
+          
+          if (currentPermissions.camera === 'granted') {
+            hasPermission = true;
+          }
+        } catch (error) {
+          console.log('Error checking permissions in CameraScreen:', error);
+        }
+        
+        // If no permission, try CameraPreview check
+        if (!hasPermission) {
+          try {
+            const permissions = await CameraPreview.requestPermissions();
+            console.log('CameraPreview permissions in CameraScreen:', permissions);
+            
+            if (permissions.camera === 'granted') {
+              hasPermission = true;
+            }
+          } catch (error) {
+            console.error('CameraPreview permission check failed:', error);
+          }
+        }
+        
+        if (!hasPermission) {
+          console.error('Camera permission not available');
+          // Don't show alert here since it should have been handled in App.js
           return;
         }
 
