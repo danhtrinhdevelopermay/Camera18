@@ -147,15 +147,24 @@ const CameraScreen = ({
           console.log('No existing preview to stop');
         }
         
+        // Calculate proper dimensions for camera preview
+        const viewportHeight = Math.round(window.innerHeight);
+        const controlsHeight = 200; // Space for bottom controls
+        const previewHeight = viewportHeight - controlsHeight;
+        
         const startOptions = {
           position: isFrontCamera ? 'front' : 'rear',
+          parent: 'cameraPreview',
+          className: 'cameraPreviewLayer',
           width: Math.round(window.innerWidth),
-          height: Math.round(window.innerHeight),
+          height: previewHeight,
           x: 0,
           y: 0,
-          toBack: true, // Use toBack: true for better compatibility
-          paddingBottom: 0,
-          rotateWhenOrientationChanged: true,
+          toBack: false, // Render into specific container
+          alpha: 1.0,
+          tapPhoto: false,
+          tapFocus: true,
+          previewDrag: false,
           storeToFile: false,
           disableExifHeaderStripping: false,
           enableHighResolution: true,

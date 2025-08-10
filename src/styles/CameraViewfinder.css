@@ -199,8 +199,17 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: calc(100% - 200px); /* Leave space for controls */
   z-index: 1;
+  background: #000;
+  overflow: hidden;
+}
+
+/* Ensure camera preview layer renders properly */
+.cameraPreviewLayer {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover;
 }
 
 .camera-overlay-ui {

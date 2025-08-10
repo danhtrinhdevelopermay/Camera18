@@ -92,11 +92,12 @@ const CameraViewfinder = forwardRef(({
       onWheel={handleWheel}
     >
       {isCapacitor() ? (
-        // Mobile - camera preview renders behind UI (toBack: true)
+        // Mobile - camera preview in specific container
         <div className="mobile-camera-container">
+          <div id="cameraPreview" className="camera-preview-container"></div>
           <div className="camera-overlay-ui">
             <div className="camera-status">
-              <small>Live Camera Preview (Background)</small>
+              <small>Live Camera Preview (In Container)</small>
             </div>
             <div className="debug-info" style={{
               position: 'absolute',
@@ -115,6 +116,7 @@ const CameraViewfinder = forwardRef(({
               <div>CameraPreview: {window.CameraPreview ? 'Available' : 'Not found'}</div>
               <div>Plugins: {window.Capacitor?.Plugins ? Object.keys(window.Capacitor.Plugins).join(', ') : 'None'}</div>
               <div>Screen: {window.innerWidth}x{window.innerHeight}</div>
+              <div style={{marginTop: '5px', color: '#00ff00'}}>Plugin Status: DETECTED! Testing preview...</div>
             </div>
           </div>
         </div>
