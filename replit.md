@@ -99,6 +99,8 @@ src/
   - Thêm Camera.checkPermissions() để kiểm tra trạng thái quyền hiện tại
   - Handle permission states: granted, denied, prompt-with-rationale
   - Build script và sync với Android platform hoàn tất
+  - ✅ **THÀNH CÔNG**: App hiển thị native Android permission dialogs cho camera & microphone
+  - User có thể cấp quyền trực tiếp qua system popup, không cần vào cài đặt
 
 ## APK Build Setup
 - ✅ GitHub Actions workflow (.github/workflows/build-android.yml)
