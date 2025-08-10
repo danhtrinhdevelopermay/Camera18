@@ -92,7 +92,7 @@ const CameraViewfinder = forwardRef(({
       onWheel={handleWheel}
     >
       {isCapacitor() ? (
-        // Mobile - show camera icon placeholder
+        // Mobile - show camera icon placeholder with debug info
         <div className="mobile-camera-placeholder">
           <div className="camera-icon">
             <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -101,6 +101,13 @@ const CameraViewfinder = forwardRef(({
             </svg>
           </div>
           <p>Tap capture button to take photo</p>
+          <div className="debug-info">
+            <small>
+              Capacitor: {typeof window !== 'undefined' && window.Capacitor ? 'Yes' : 'No'}<br/>
+              Native: {typeof window !== 'undefined' && window.Capacitor?.isNativePlatform ? window.Capacitor.isNativePlatform().toString() : 'No'}<br/>
+              Platform: {typeof navigator !== 'undefined' ? navigator.platform : 'Unknown'}
+            </small>
+          </div>
         </div>
       ) : (
         // Web - show video stream

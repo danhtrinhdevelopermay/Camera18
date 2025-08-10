@@ -212,3 +212,17 @@
   margin: 0;
   font-weight: 500;
 }
+
+.debug-info {
+  margin-top: 20px;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  backdrop-filter: blur(10px);
+}
+
+.debug-info small {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.4;
+}

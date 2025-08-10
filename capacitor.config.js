@@ -7,7 +7,10 @@ module.exports = {
   },
   plugins: {
     Camera: {
-      requestPermissions: true
+      requestPermissions: true,
+      saveToGallery: false,
+      allowEditing: false,
+      quality: 90
     },
     SplashScreen: {
       launchShowDuration: 3000,

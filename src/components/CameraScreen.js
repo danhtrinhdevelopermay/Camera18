@@ -6,14 +6,11 @@ import TopBar from './TopBar';
 import '../styles/CameraScreen.css';
 
 // Capacitor Camera import for mobile
-let Camera = null;
-try {
-  if (window.Capacitor) {
-    Camera = window.Capacitor.Plugins.Camera;
-  }
-} catch (e) {
-  console.log('Capacitor not available, using web APIs');
-}
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+
+const isCapacitor = () => {
+  return typeof window !== 'undefined' && window.Capacitor && window.Capacitor.isNativePlatform();
+};
 
 const CameraScreen = ({
   onPhotoCapture,
@@ -47,9 +44,7 @@ const CameraScreen = ({
     };
   }, [isFrontCamera]);
 
-  const isCapacitor = () => {
-    return window.Capacitor && window.Capacitor.isNativePlatform();
-  };
+
 
   const initializeCamera = async () => {
     try {
@@ -85,23 +80,32 @@ const CameraScreen = ({
       setIsCapturing(true);
       
       try {
-        if (isCapacitor() && Camera) {
+        if (isCapacitor()) {
           // Mobile - use Capacitor Camera API
           const image = await Camera.getPhoto({
             quality: 90,
             allowEditing: false,
-            resultType: 'DataUrl',
-            source: 'Camera',
-            direction: isFrontCamera ? 'Front' : 'Back'
+            resultType: CameraResultType.DataUrl,
+            source: CameraSource.Camera,
+            direction: isFrontCamera ? 'FRONT' : 'REAR'
           });
           
-          // Create blob from base64
+          // Create photo data object with blob
           const response = await fetch(image.dataUrl);
           const blob = await response.blob();
           
+          const photoData = {
+            blob,
+            url: image.dataUrl,
+            timestamp: Date.now(),
+            mode: cameraMode,
+            flash: flashMode,
+            frontCamera: isFrontCamera
+          };
+          
           setTimeout(() => {
             setIsCapturing(false);
-            onPhotoCapture(blob);
+            onPhotoCapture(photoData);
           }, 300);
           
         } else {

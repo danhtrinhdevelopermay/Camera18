@@ -78,6 +78,13 @@ src/
 - 2025-08-10: Setup GitHub Actions workflow cho build APK
 - Added Capacitor configuration để build Android APK
 - Created complete build pipeline với automated APK generation
+- 2025-08-10: TRIỆT ĐỂ SỬA LỖI CAMERA MOBILE
+  - Cài đặt đúng @capacitor/camera, @capacitor/core, @capacitor/android
+  - Sửa import Camera API với CameraResultType, CameraSource constants
+  - Tạo Android permissions: AndroidManifest.xml với CAMERA permissions
+  - Thêm file_paths.xml cho FileProvider
+  - Debug info trong mobile placeholder để kiểm tra Capacitor detection
+  - Cập nhật GitHub Actions để copy Android configuration files
 
 ## APK Build Setup
 - ✅ GitHub Actions workflow (.github/workflows/build-android.yml)

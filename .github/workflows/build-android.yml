@@ -63,6 +63,12 @@ jobs:
     - name: Add Android platform
       run: npx cap add android
       
+    - name: Copy Android configuration
+      run: |
+        mkdir -p android/app/src/main/res/xml
+        cp android/app/src/main/AndroidManifest.xml android/app/src/main/AndroidManifest.xml || true
+        cp android/app/src/main/res/xml/file_paths.xml android/app/src/main/res/xml/file_paths.xml || true
+      
     - name: Copy web assets and sync
       run: |
         npx cap copy android
