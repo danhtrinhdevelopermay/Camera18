@@ -5,6 +5,16 @@ import CameraViewfinder from './CameraViewfinder';
 import TopBar from './TopBar';
 import '../styles/CameraScreen.css';
 
+// Capacitor Camera import for mobile
+let Camera = null;
+try {
+  if (window.Capacitor) {
+    Camera = window.Capacitor.Plugins.Camera;
+  }
+} catch (e) {
+  console.log('Capacitor not available, using web APIs');
+}
+
 const CameraScreen = ({
   onPhotoCapture,
   isRecording,
@@ -37,22 +47,34 @@ const CameraScreen = ({
     };
   }, [isFrontCamera]);
 
+  const isCapacitor = () => {
+    return window.Capacitor && window.Capacitor.isNativePlatform();
+  };
+
   const initializeCamera = async () => {
     try {
-      const constraints = {
-        video: {
-          facingMode: isFrontCamera ? 'user' : 'environment',
-          width: { ideal: 1920 },
-          height: { ideal: 1080 }
-        },
-        audio: cameraMode === 'video'
-      };
+      if (isCapacitor() && Camera) {
+        // Mobile - use Capacitor Camera for preview (or show camera placeholder)
+        console.log('Running on mobile - Capacitor Camera available');
+        // For now, we'll show the camera icon until we implement live preview
+        return;
+      } else {
+        // Web - use MediaDevices API
+        const constraints = {
+          video: {
+            facingMode: isFrontCamera ? 'user' : 'environment',
+            width: { ideal: 1920 },
+            height: { ideal: 1080 }
+          },
+          audio: cameraMode === 'video'
+        };
 
-      const stream = await navigator.mediaDevices.getUserMedia(constraints);
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+        }
+        streamRef.current = stream;
       }
-      streamRef.current = stream;
     } catch (error) {
       console.error('Error accessing camera:', error);
     }
@@ -62,29 +84,55 @@ const CameraScreen = ({
     if (cameraMode === 'photo') {
       setIsCapturing(true);
       
-      // Capture photo from video
-      const canvas = canvasRef.current;
-      const video = videoRef.current;
-      const context = canvas.getContext('2d');
-      
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      context.drawImage(video, 0, 0);
-      
-      // Convert to blob
-      canvas.toBlob((blob) => {
-        const photoData = {
-          blob,
-          url: URL.createObjectURL(blob),
-          timestamp: Date.now(),
-          mode: cameraMode,
-          flash: flashMode,
-          frontCamera: isFrontCamera
-        };
-        
-        onPhotoCapture(photoData);
+      try {
+        if (isCapacitor() && Camera) {
+          // Mobile - use Capacitor Camera API
+          const image = await Camera.getPhoto({
+            quality: 90,
+            allowEditing: false,
+            resultType: 'DataUrl',
+            source: 'Camera',
+            direction: isFrontCamera ? 'Front' : 'Back'
+          });
+          
+          // Create blob from base64
+          const response = await fetch(image.dataUrl);
+          const blob = await response.blob();
+          
+          setTimeout(() => {
+            setIsCapturing(false);
+            onPhotoCapture(blob);
+          }, 300);
+          
+        } else {
+          // Web - capture from video
+          const canvas = canvasRef.current;
+          const video = videoRef.current;
+          const context = canvas.getContext('2d');
+          
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
+          context.drawImage(video, 0, 0);
+          
+          // Convert to blob
+          canvas.toBlob((blob) => {
+            const photoData = {
+              blob,
+              url: URL.createObjectURL(blob),
+              timestamp: Date.now(),
+              mode: cameraMode,
+              flash: flashMode,
+              frontCamera: isFrontCamera
+            };
+            
+            onPhotoCapture(photoData);
+            setIsCapturing(false);
+          }, 'image/jpeg', 0.9);
+        }
+      } catch (error) {
+        console.error('Error capturing photo:', error);
         setIsCapturing(false);
-      }, 'image/jpeg', 0.9);
+      }
     } else if (cameraMode === 'video') {
       onToggleRecording();
     }

@@ -1,6 +1,11 @@
 import React, { forwardRef, useState, useEffect, useRef } from 'react';
 import '../styles/CameraViewfinder.css';
 
+// Check if running on Capacitor mobile
+const isCapacitor = () => {
+  return window.Capacitor && window.Capacitor.isNativePlatform();
+};
+
 const CameraViewfinder = forwardRef(({ 
   canvasRef, 
   zoomLevel, 
@@ -86,16 +91,30 @@ const CameraViewfinder = forwardRef(({
       onTouchMove={handleTouchMove}
       onWheel={handleWheel}
     >
-      <video
-        ref={videoRef}
-        autoPlay
-        playsInline
-        muted
-        className="camera-video"
-        style={{
-          transform: `scale(${zoomLevel})`,
-        }}
-      />
+      {isCapacitor() ? (
+        // Mobile - show camera icon placeholder
+        <div className="mobile-camera-placeholder">
+          <div className="camera-icon">
+            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path>
+              <circle cx="12" cy="13" r="3"></circle>
+            </svg>
+          </div>
+          <p>Tap capture button to take photo</p>
+        </div>
+      ) : (
+        // Web - show video stream
+        <video
+          ref={videoRef}
+          autoPlay
+          playsInline
+          muted
+          className="camera-video"
+          style={{
+            transform: `scale(${zoomLevel})`,
+          }}
+        />
+      )}
       
       <canvas
         ref={canvasRef}
