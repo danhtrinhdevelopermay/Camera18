@@ -113,6 +113,7 @@ const CameraViewfinder = forwardRef(({
               <div>Capacitor: {window.Capacitor ? 'Yes' : 'No'}</div>
               <div>Native: {window.Capacitor?.isNativePlatform() ? 'Yes' : 'No'}</div>
               <div>CameraPreview: {window.CameraPreview ? 'Available' : 'Not found'}</div>
+              <div>Plugins: {window.Capacitor?.Plugins ? Object.keys(window.Capacitor.Plugins).join(', ') : 'None'}</div>
               <div>Screen: {window.innerWidth}x{window.innerHeight}</div>
             </div>
           </div>

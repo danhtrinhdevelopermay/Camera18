@@ -7,8 +7,25 @@ import '../styles/CameraScreen.css';
 
 // Capacitor Camera imports for mobile
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
-import { CameraPreview } from '@capacitor-community/camera-preview';
 import { Capacitor } from '@capacitor/core';
+
+// Dynamic CameraPreview import to handle loading issues
+let CameraPreview = null;
+if (typeof window !== 'undefined') {
+  try {
+    // Try to get CameraPreview from global window object first
+    CameraPreview = window.CameraPreview;
+    if (!CameraPreview) {
+      // Fallback to import
+      import('@capacitor-community/camera-preview').then(module => {
+        CameraPreview = module.CameraPreview;
+        window.CameraPreview = CameraPreview; // Store globally
+      });
+    }
+  } catch (e) {
+    console.error('Failed to load CameraPreview:', e);
+  }
+}
 
 const isCapacitor = () => {
   return typeof window !== 'undefined' && window.Capacitor && window.Capacitor.isNativePlatform();
@@ -50,7 +67,10 @@ const CameraScreen = ({
       }
       // Cleanup for mobile
       if (isCapacitor()) {
-        CameraPreview.stop().catch(console.error);
+        const activePreview = CameraPreview || window.CameraPreview;
+        if (activePreview) {
+          activePreview.stop().catch(console.error);
+        }
       }
     };
   }, [isFrontCamera, cameraReady]);
@@ -65,12 +85,19 @@ const CameraScreen = ({
     try {
       if (isCapacitor()) {
         // Mobile: Check if CameraPreview is available
-        if (!window.CameraPreview) {
+        if (!CameraPreview && !window.CameraPreview) {
           console.error('❌ CameraPreview plugin not available');
-          return;
+          // Try one more time to get from window
+          CameraPreview = window.CameraPreview;
+          if (!CameraPreview) {
+            console.error('❌ CameraPreview still not found in window object');
+            return;
+          }
         }
         
-        console.log('✅ CameraPreview plugin found');
+        // Use CameraPreview from global window if available
+        const activePreview = CameraPreview || window.CameraPreview;
+        console.log('✅ CameraPreview plugin found:', !!activePreview);
         
         // Check permissions first
         let hasPermission = false;
@@ -93,7 +120,7 @@ const CameraScreen = ({
         if (!hasPermission) {
           try {
             console.log('🔄 Trying CameraPreview permission check...');
-            const permissions = await CameraPreview.requestPermissions();
+            const permissions = await activePreview.requestPermissions();
             console.log('📋 CameraPreview permissions result:', permissions);
             
             if (permissions.camera === 'granted') {
@@ -114,7 +141,7 @@ const CameraScreen = ({
         
         // Stop any existing preview first
         try {
-          await CameraPreview.stop();
+          await activePreview.stop();
           console.log('Stopped existing camera preview');
         } catch (e) {
           console.log('No existing preview to stop');
@@ -136,7 +163,7 @@ const CameraScreen = ({
         };
         
         console.log('Camera preview options:', startOptions);
-        await CameraPreview.start(startOptions);
+        await activePreview.start(startOptions);
         console.log('Camera preview started successfully with toBack: true');
         return;
       } else {
@@ -169,7 +196,13 @@ const CameraScreen = ({
       try {
         if (isCapacitor()) {
           // Mobile - capture from camera preview
-          const result = await CameraPreview.capture({
+          const activePreview = CameraPreview || window.CameraPreview;
+          if (!activePreview) {
+            console.error('CameraPreview not available for capture');
+            return;
+          }
+          
+          const result = await activePreview.capture({
             quality: 90,
             width: 1920,
             height: 1080
