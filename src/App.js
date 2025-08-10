@@ -53,7 +53,7 @@ const App = () => {
             try {
               console.log('📱 Requesting camera permissions (system dialog should appear)...');
               
-              // This will trigger the native Android permission dialog
+              // This will trigger the native Android permission dialog immediately
               const permissionResult = await Camera.requestPermissions({
                 permissions: ['camera']
               });
@@ -96,8 +96,9 @@ const App = () => {
             }
           }
           
+          // Don't show any custom alerts - let the system handle permissions
           if (!permissionsGranted) {
-            console.warn('⚠️ All permission attempts failed');
+            console.warn('⚠️ Camera permissions not granted');
           } else {
             console.log('🎉 Camera permissions successfully obtained');
           }

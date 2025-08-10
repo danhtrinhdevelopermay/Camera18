@@ -125,9 +125,7 @@ const CameraScreen = ({
       }
     } catch (error) {
       console.error('Error accessing camera:', error);
-      if (isCapacitor()) {
-        alert('Không thể truy cập camera. Vui lòng kiểm tra quyền ứng dụng trong Cài đặt.');
-      }
+      // Don't show alerts - permissions should be handled by system dialog
     }
   };
 
