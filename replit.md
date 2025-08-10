@@ -89,6 +89,12 @@ src/
   - Camera preview hiển thị trực tiếp trong app (không mở camera bên ngoài)
   - CameraPreview.start() cho live preview, CameraPreview.capture() cho chụp ảnh
   - Camera flip và zoom support trong mobile app
+- 2025-08-10: SỬA LỖI CAMERA PERMISSIONS - App không yêu cầu quyền camera
+  - Thêm explicit camera permission request trong App.js khi khởi động
+  - Sửa CameraScreen.js để check quyền trước khi start camera preview
+  - Implement dual permission API: CameraPreview + Camera API
+  - Thêm error handling và user messages khi quyền bị từ chối
+  - Sync Capacitor project với Android platform
 
 ## APK Build Setup
 - ✅ GitHub Actions workflow (.github/workflows/build-android.yml)

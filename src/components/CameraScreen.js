@@ -8,6 +8,7 @@ import '../styles/CameraScreen.css';
 // Capacitor Camera imports for mobile
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { CameraPreview } from '@capacitor-community/camera-preview';
+import { Capacitor } from '@capacitor/core';
 
 const isCapacitor = () => {
   return typeof window !== 'undefined' && window.Capacitor && window.Capacitor.isNativePlatform();
@@ -55,7 +56,19 @@ const CameraScreen = ({
   const initializeCamera = async () => {
     try {
       if (isCapacitor()) {
-        // Mobile: Start camera preview trong ứng dụng
+        // Mobile: Request camera permissions first, then start preview
+        console.log('Requesting camera permissions...');
+        
+        // Explicitly request camera permissions
+        const permissions = await CameraPreview.requestPermissions();
+        console.log('Camera permissions result:', permissions);
+        
+        if (permissions.camera !== 'granted') {
+          console.error('Camera permission denied');
+          alert('Ứng dụng cần quyền truy cập camera để hoạt động. Vui lòng cấp quyền trong Cài đặt.');
+          return;
+        }
+
         console.log('Starting Capacitor camera preview...');
         await CameraPreview.start({
           position: isFrontCamera ? 'front' : 'rear',
@@ -67,7 +80,7 @@ const CameraScreen = ({
           storeToFile: false,
           disableExifHeaderStripping: false
         });
-        console.log('Camera preview started');
+        console.log('Camera preview started successfully');
         return;
       } else {
         // Web - use MediaDevices API
@@ -88,6 +101,9 @@ const CameraScreen = ({
       }
     } catch (error) {
       console.error('Error accessing camera:', error);
+      if (isCapacitor()) {
+        alert('Không thể truy cập camera. Vui lòng kiểm tra quyền ứng dụng trong Cài đặt.');
+      }
     }
   };
 

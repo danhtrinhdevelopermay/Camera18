@@ -16,6 +16,7 @@
     "@capacitor-community/camera-preview": "^7.0.2",
     "@capacitor/android": "^7.4.2",
     "@capacitor/camera": "^7.0.2",
+    "@capacitor/cli": "^7.4.2",
     "@capacitor/core": "^7.4.2",
     "babel-loader": "^10.0.0",
     "css-loader": "^7.1.2",
