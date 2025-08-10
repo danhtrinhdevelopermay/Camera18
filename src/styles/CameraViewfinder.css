@@ -1,0 +1,187 @@
+.camera-viewfinder {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: none;
+}
+
+.camera-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform-origin: center center;
+  transition: transform 0.1s ease-out;
+  background: #000;
+}
+
+.camera-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Grid overlay */
+.grid-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 20;
+}
+
+.camera-viewfinder:active .grid-overlay {
+  opacity: 0.3;
+}
+
+.grid-line {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.grid-vertical {
+  width: 1px;
+  height: 100%;
+}
+
+.grid-horizontal {
+  height: 1px;
+  width: 100%;
+}
+
+/* Zoom indicator */
+.zoom-indicator {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  z-index: 30;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  opacity: 0;
+  animation: zoomIndicator 1s ease-out;
+}
+
+@keyframes zoomIndicator {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  20% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  80% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+}
+
+/* Focus ring */
+.focus-ring {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  border: 2px solid #007AFF;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 50;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(1.5);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3);
+}
+
+.focus-ring.active {
+  animation: focusRing 0.6s ease-out;
+}
+
+@keyframes focusRing {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.5);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+}
+
+/* Camera mode overlay */
+.camera-mode-overlay {
+  position: absolute;
+  bottom: 120px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 40;
+  pointer-events: none;
+}
+
+.portrait-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 8px 16px;
+  border-radius: 20px;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* Camera border blur effect */
+.camera-border-blur {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 10;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 30%,
+    rgba(0, 0, 0, 0.05) 50%,
+    rgba(0, 0, 0, 0.1) 70%,
+    rgba(0, 0, 0, 0.2) 100%
+  );
+}
+
+/* iOS 18 style vignette effect */
+.camera-viewfinder::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 60%,
+    rgba(0, 0, 0, 0.1) 100%
+  );
+  pointer-events: none;
+  z-index: 5;
+}
