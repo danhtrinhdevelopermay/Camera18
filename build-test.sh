@@ -14,6 +14,19 @@ if [ "$NODE_VERSION" -lt 20 ]; then
     echo "   GitHub Actions will use Node.js 20"
 fi
 
+# Check Java version if available
+if command -v java >/dev/null 2>&1; then
+    JAVA_VERSION_OUTPUT=$(java -version 2>&1 | head -n 1)
+    echo "Java version: $JAVA_VERSION_OUTPUT"
+    JAVA_VERSION=$(java -version 2>&1 | head -n 1 | cut -d'"' -f2 | cut -d'.' -f1)
+    if [ "$JAVA_VERSION" -lt 21 ]; then
+        echo "⚠️  Warning: Android build requires Java >=21"
+        echo "   GitHub Actions will use Java 21"
+    fi
+else
+    echo "⚠️  Java not found locally (GitHub Actions will install Java 21)"
+fi
+
 # Install dependencies
 echo "📦 Installing dependencies..."
 npm install
