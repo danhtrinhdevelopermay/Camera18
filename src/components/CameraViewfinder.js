@@ -92,13 +92,28 @@ const CameraViewfinder = forwardRef(({
       onWheel={handleWheel}
     >
       {isCapacitor() ? (
-        // Mobile - camera preview container
+        // Mobile - camera preview renders behind UI (toBack: true)
         <div className="mobile-camera-container">
-          {/* Container for camera preview */}
-          <div id="cameraPreview" className="camera-preview-container"></div>
           <div className="camera-overlay-ui">
             <div className="camera-status">
-              <small>Live Camera Preview</small>
+              <small>Live Camera Preview (Background)</small>
+            </div>
+            <div className="debug-info" style={{
+              position: 'absolute',
+              bottom: '200px',
+              left: '20px',
+              right: '20px',
+              background: 'rgba(0,0,0,0.7)',
+              color: 'white',
+              padding: '10px',
+              borderRadius: '8px',
+              fontSize: '12px',
+              zIndex: 200
+            }}>
+              <div>Capacitor: {window.Capacitor ? 'Yes' : 'No'}</div>
+              <div>Native: {window.Capacitor?.isNativePlatform() ? 'Yes' : 'No'}</div>
+              <div>CameraPreview: {window.CameraPreview ? 'Available' : 'Not found'}</div>
+              <div>Screen: {window.innerWidth}x{window.innerHeight}</div>
             </div>
           </div>
         </div>

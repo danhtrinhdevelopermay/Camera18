@@ -58,64 +58,86 @@ const CameraScreen = ({
 
 
   const initializeCamera = async () => {
+    console.log('🎥 initializeCamera called - isCapacitor:', isCapacitor());
+    console.log('🔧 cameraReady state:', cameraReady);
+    console.log('📱 isFrontCamera:', isFrontCamera);
+    
     try {
       if (isCapacitor()) {
-        // Mobile: Request camera permissions first, then start preview
-        console.log('Requesting camera permissions...');
+        // Mobile: Check if CameraPreview is available
+        if (!window.CameraPreview) {
+          console.error('❌ CameraPreview plugin not available');
+          return;
+        }
         
-        // Check permissions first, don't request again if already handled in App.js
+        console.log('✅ CameraPreview plugin found');
+        
+        // Check permissions first
         let hasPermission = false;
         
         try {
           const currentPermissions = await Camera.checkPermissions();
-          console.log('Current camera permissions:', currentPermissions);
+          console.log('📋 Current camera permissions:', currentPermissions);
           
           if (currentPermissions.camera === 'granted') {
             hasPermission = true;
+            console.log('✅ Camera permissions already granted');
+          } else {
+            console.log('❌ Camera permissions not granted:', currentPermissions.camera);
           }
         } catch (error) {
-          console.log('Error checking permissions in CameraScreen:', error);
+          console.error('❌ Error checking Camera permissions:', error);
         }
         
-        // If no permission, try CameraPreview check
+        // Try CameraPreview permissions if Camera API failed
         if (!hasPermission) {
           try {
+            console.log('🔄 Trying CameraPreview permission check...');
             const permissions = await CameraPreview.requestPermissions();
-            console.log('CameraPreview permissions in CameraScreen:', permissions);
+            console.log('📋 CameraPreview permissions result:', permissions);
             
             if (permissions.camera === 'granted') {
               hasPermission = true;
+              console.log('✅ CameraPreview permissions granted');
             }
           } catch (error) {
-            console.error('CameraPreview permission check failed:', error);
+            console.error('❌ CameraPreview permission check failed:', error);
           }
         }
         
         if (!hasPermission) {
-          console.error('Camera permission not available');
-          // Don't show alert here since it should have been handled in App.js
+          console.error('❌ No camera permissions available, cannot start preview');
           return;
         }
 
         console.log('Starting Capacitor camera preview...');
-        await CameraPreview.start({
+        
+        // Stop any existing preview first
+        try {
+          await CameraPreview.stop();
+          console.log('Stopped existing camera preview');
+        } catch (e) {
+          console.log('No existing preview to stop');
+        }
+        
+        const startOptions = {
           position: isFrontCamera ? 'front' : 'rear',
-          parent: 'cameraPreview', // Use specific element ID
-          className: 'cameraPreview',
           width: Math.round(window.innerWidth),
-          height: Math.round(window.innerHeight * 0.75), // Leave space for controls
+          height: Math.round(window.innerHeight),
           x: 0,
           y: 0,
-          toBack: false, // Don't put to background
-          alpha: 1,
-          tapPhoto: false,
-          tapFocus: true,
-          previewDrag: false,
-          disableExifHeaderStripping: false,
+          toBack: true, // Use toBack: true for better compatibility
+          paddingBottom: 0,
+          rotateWhenOrientationChanged: true,
           storeToFile: false,
-          enableZoom: true
-        });
-        console.log('Camera preview started successfully');
+          disableExifHeaderStripping: false,
+          enableHighResolution: true,
+          enableOpacity: false
+        };
+        
+        console.log('Camera preview options:', startOptions);
+        await CameraPreview.start(startOptions);
+        console.log('Camera preview started successfully with toBack: true');
         return;
       } else {
         // Web - use MediaDevices API
