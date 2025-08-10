@@ -34,6 +34,8 @@ Thumbs.db
 ios/
 android/
 .capacitor/
+# But keep capacitor.config.js for build
+!capacitor.config.js
 
 # Logs
 logs

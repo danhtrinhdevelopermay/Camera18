@@ -1,0 +1,12 @@
+﻿2025-08-10T00:27:55.5133264Z ##[group]Run npx cap init "iOS Camera App" "com.iosCamera.app" --web-dir=dist
+2025-08-10T00:27:55.5134108Z [36;1mnpx cap init "iOS Camera App" "com.iosCamera.app" --web-dir=dist[0m
+2025-08-10T00:27:55.5195550Z shell: /usr/bin/bash -e {0}
+2025-08-10T00:27:55.5195928Z env:
+2025-08-10T00:27:55.5196401Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.16-8/x64
+2025-08-10T00:27:55.5197185Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.16-8/x64
+2025-08-10T00:27:55.5197810Z   ANDROID_HOME: /usr/local/lib/android/sdk
+2025-08-10T00:27:55.5198274Z   ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
+2025-08-10T00:27:55.5198709Z ##[endgroup]
+2025-08-10T00:27:55.9579306Z [31m[fatal][39m The Capacitor CLI requires NodeJS >=20.0.0
+2025-08-10T00:27:55.9581130Z         Please install the latest LTS version.
+2025-08-10T00:27:55.9723549Z ##[error]Process completed with exit code 1.

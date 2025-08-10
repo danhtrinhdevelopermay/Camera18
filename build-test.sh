@@ -4,8 +4,15 @@ echo "🚀 Testing build process for iOS Camera App..."
 
 # Check if Node.js and npm are available
 echo "📦 Checking dependencies..."
-node --version
-npm --version
+NODE_VERSION=$(node --version | cut -d'v' -f2 | cut -d'.' -f1)
+echo "Node.js version: $(node --version)"
+echo "npm version: $(npm --version)"
+
+if [ "$NODE_VERSION" -lt 20 ]; then
+    echo "⚠️  Warning: Capacitor requires Node.js >=20.0.0"
+    echo "   Your version: $(node --version)"
+    echo "   GitHub Actions will use Node.js 20"
+fi
 
 # Install dependencies
 echo "📦 Installing dependencies..."

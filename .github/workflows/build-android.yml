@@ -18,7 +18,7 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '18'
+        node-version: '20'
         cache: 'npm'
         
     - name: Install dependencies
@@ -36,14 +36,23 @@ jobs:
     - name: Setup Android SDK
       uses: android-actions/setup-android@v3
       
+    - name: Check Node.js version
+      run: |
+        node --version
+        npm --version
+        
     - name: Install Capacitor
       run: |
         npm install -g @capacitor/cli@latest
-        npm install @capacitor/core @capacitor/android @capacitor/camera @capacitor/splash-screen
+        npm install @capacitor/core @capacitor/android @capacitor/camera @capacitor/splash-screen --save
         
     - name: Initialize Capacitor
       run: |
-        npx cap init "iOS Camera App" "com.iosCamera.app" --web-dir=dist
+        # Use existing capacitor.config.js if available, otherwise init
+        if [ ! -f "capacitor.config.js" ]; then
+          npx cap init "iOS Camera App" "com.iosCamera.app" --web-dir=dist
+        fi
+        cat capacitor.config.js
         
     - name: Add Android platform
       run: npx cap add android
