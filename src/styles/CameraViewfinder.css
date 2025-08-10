@@ -186,43 +186,37 @@
   z-index: 5;
 }
 
-/* Mobile camera placeholder */
-.mobile-camera-placeholder {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: rgba(255, 255, 255, 0.8);
-  text-align: center;
-  gap: 20px;
-  height: 100%;
+/* Mobile camera container */
+.mobile-camera-container {
+  position: relative;
   width: 100%;
+  height: 100%;
+  background: transparent;
 }
 
-.camera-icon {
-  color: rgba(255, 255, 255, 0.6);
-  padding: 20px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
+.camera-overlay-ui {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 100;
 }
 
-.mobile-camera-placeholder p {
-  font-size: 16px;
-  margin: 0;
-  font-weight: 500;
+.camera-status {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.6);
+  padding: 8px 16px;
+  border-radius: 20px;
+  backdrop-filter: blur(20px);
 }
 
-.debug-info {
-  margin-top: 20px;
-  padding: 10px;
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: 8px;
-  backdrop-filter: blur(10px);
-}
-
-.debug-info small {
+.camera-status small {
+  color: rgba(255, 255, 255, 0.9);
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.7);
-  line-height: 1.4;
+  font-weight: 500;
 }

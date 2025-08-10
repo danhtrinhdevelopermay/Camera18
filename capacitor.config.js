@@ -12,6 +12,9 @@ module.exports = {
       allowEditing: false,
       quality: 90
     },
+    CameraPreview: {
+      requestPermissions: true
+    },
     SplashScreen: {
       launchShowDuration: 3000,
       launchAutoHide: true,

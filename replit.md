@@ -85,6 +85,10 @@ src/
   - Thêm file_paths.xml cho FileProvider
   - Debug info trong mobile placeholder để kiểm tra Capacitor detection
   - Cập nhật GitHub Actions để copy Android configuration files
+  - **LIVE CAMERA PREVIEW**: Implement @capacitor-community/camera-preview
+  - Camera preview hiển thị trực tiếp trong app (không mở camera bên ngoài)
+  - CameraPreview.start() cho live preview, CameraPreview.capture() cho chụp ảnh
+  - Camera flip và zoom support trong mobile app
 
 ## APK Build Setup
 - ✅ GitHub Actions workflow (.github/workflows/build-android.yml)

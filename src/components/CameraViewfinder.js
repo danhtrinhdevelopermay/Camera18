@@ -92,21 +92,13 @@ const CameraViewfinder = forwardRef(({
       onWheel={handleWheel}
     >
       {isCapacitor() ? (
-        // Mobile - show camera icon placeholder with debug info
-        <div className="mobile-camera-placeholder">
-          <div className="camera-icon">
-            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-              <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path>
-              <circle cx="12" cy="13" r="3"></circle>
-            </svg>
-          </div>
-          <p>Tap capture button to take photo</p>
-          <div className="debug-info">
-            <small>
-              Capacitor: {typeof window !== 'undefined' && window.Capacitor ? 'Yes' : 'No'}<br/>
-              Native: {typeof window !== 'undefined' && window.Capacitor?.isNativePlatform ? window.Capacitor.isNativePlatform().toString() : 'No'}<br/>
-              Platform: {typeof navigator !== 'undefined' ? navigator.platform : 'Unknown'}
-            </small>
+        // Mobile - camera preview background, UI overlay on top
+        <div className="mobile-camera-container">
+          {/* Camera preview renders behind via toBack: true */}
+          <div className="camera-overlay-ui">
+            <div className="camera-status">
+              <small>Live Camera Preview</small>
+            </div>
           </div>
         </div>
       ) : (

@@ -50,7 +50,7 @@ jobs:
     - name: Install Capacitor
       run: |
         npm install -g @capacitor/cli@latest
-        npm install @capacitor/core @capacitor/android @capacitor/camera @capacitor/splash-screen --save
+        npm install @capacitor/core @capacitor/android @capacitor/camera @capacitor-community/camera-preview @capacitor/splash-screen --save
         
     - name: Initialize Capacitor
       run: |

@@ -5,8 +5,9 @@ import CameraViewfinder from './CameraViewfinder';
 import TopBar from './TopBar';
 import '../styles/CameraScreen.css';
 
-// Capacitor Camera import for mobile
+// Capacitor Camera imports for mobile
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+import { CameraPreview } from '@capacitor-community/camera-preview';
 
 const isCapacitor = () => {
   return typeof window !== 'undefined' && window.Capacitor && window.Capacitor.isNativePlatform();
@@ -38,8 +39,13 @@ const CameraScreen = ({
   useEffect(() => {
     initializeCamera();
     return () => {
+      // Cleanup for web
       if (streamRef.current) {
         streamRef.current.getTracks().forEach(track => track.stop());
+      }
+      // Cleanup for mobile
+      if (isCapacitor()) {
+        CameraPreview.stop().catch(console.error);
       }
     };
   }, [isFrontCamera]);
@@ -48,10 +54,20 @@ const CameraScreen = ({
 
   const initializeCamera = async () => {
     try {
-      if (isCapacitor() && Camera) {
-        // Mobile - use Capacitor Camera for preview (or show camera placeholder)
-        console.log('Running on mobile - Capacitor Camera available');
-        // For now, we'll show the camera icon until we implement live preview
+      if (isCapacitor()) {
+        // Mobile: Start camera preview trong ứng dụng
+        console.log('Starting Capacitor camera preview...');
+        await CameraPreview.start({
+          position: isFrontCamera ? 'front' : 'rear',
+          width: window.innerWidth,
+          height: window.innerHeight,
+          toBack: true,
+          paddingBottom: 0,
+          rotateWhenOrientationChanged: true,
+          storeToFile: false,
+          disableExifHeaderStripping: false
+        });
+        console.log('Camera preview started');
         return;
       } else {
         // Web - use MediaDevices API
@@ -81,22 +97,20 @@ const CameraScreen = ({
       
       try {
         if (isCapacitor()) {
-          // Mobile - use Capacitor Camera API
-          const image = await Camera.getPhoto({
+          // Mobile - capture from camera preview
+          const result = await CameraPreview.capture({
             quality: 90,
-            allowEditing: false,
-            resultType: CameraResultType.DataUrl,
-            source: CameraSource.Camera,
-            direction: isFrontCamera ? 'FRONT' : 'REAR'
+            width: 1920,
+            height: 1080
           });
           
           // Create photo data object with blob
-          const response = await fetch(image.dataUrl);
+          const response = await fetch(`data:image/jpeg;base64,${result.value}`);
           const blob = await response.blob();
           
           const photoData = {
             blob,
-            url: image.dataUrl,
+            url: `data:image/jpeg;base64,${result.value}`,
             timestamp: Date.now(),
             mode: cameraMode,
             flash: flashMode,
@@ -149,8 +163,17 @@ const CameraScreen = ({
     setFlashMode(modes[nextIndex]);
   };
 
-  const handleCameraFlip = () => {
+  const handleCameraFlip = async () => {
     setIsFrontCamera(!isFrontCamera);
+    
+    // Switch camera on mobile
+    if (isCapacitor()) {
+      try {
+        await CameraPreview.flip();
+      } catch (error) {
+        console.error('Error flipping camera:', error);
+      }
+    }
   };
 
   const handleZoomChange = (newZoom) => {
