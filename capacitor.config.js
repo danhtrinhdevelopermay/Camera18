@@ -1,4 +1,4 @@
-const config = {
+module.exports = {
   appId: 'com.iosCamera.app',
   appName: 'iOS Camera App',
   webDir: 'dist',
@@ -28,5 +28,3 @@ const config = {
     useLegacyBridge: false
   }
 };
-
-export default config;

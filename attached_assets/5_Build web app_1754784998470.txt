@@ -1,0 +1,10 @@
+﻿2025-08-10T00:13:55.6984524Z ##[group]Run npm run build
+2025-08-10T00:13:55.6984824Z [36;1mnpm run build[0m
+2025-08-10T00:13:55.7027137Z shell: /usr/bin/bash -e {0}
+2025-08-10T00:13:55.7027404Z ##[endgroup]
+2025-08-10T00:13:55.8719787Z npm error Missing script: "build"
+2025-08-10T00:13:55.8720434Z npm error
+2025-08-10T00:13:55.8721238Z npm error To see a list of scripts, run:
+2025-08-10T00:13:55.8721842Z npm error   npm run
+2025-08-10T00:13:55.8740423Z npm error A complete log of this run can be found in: /home/runner/.npm/_logs/2025-08-10T00_13_55_781Z-debug-0.log
+2025-08-10T00:13:55.8799080Z ##[error]Process completed with exit code 1.
