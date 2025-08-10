@@ -1,0 +1,11 @@
+﻿2025-08-10T00:24:41.4629995Z ##[group]Run npx cap init "iOS Camera App" "com.iosCamera.app" --web-dir=dist --npm-client=npm
+2025-08-10T00:24:41.4630597Z [36;1mnpx cap init "iOS Camera App" "com.iosCamera.app" --web-dir=dist --npm-client=npm[0m
+2025-08-10T00:24:41.4673775Z shell: /usr/bin/bash -e {0}
+2025-08-10T00:24:41.4674018Z env:
+2025-08-10T00:24:41.4674303Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.16-8/x64
+2025-08-10T00:24:41.4674757Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.16-8/x64
+2025-08-10T00:24:41.4675138Z   ANDROID_HOME: /usr/local/lib/android/sdk
+2025-08-10T00:24:41.4675421Z   ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
+2025-08-10T00:24:41.4675667Z ##[endgroup]
+2025-08-10T00:24:41.9567833Z error: unknown option '--npm-client=npm'
+2025-08-10T00:24:41.9719157Z ##[error]Process completed with exit code 1.

@@ -38,21 +38,20 @@ jobs:
       
     - name: Install Capacitor
       run: |
-        npm install -g @capacitor/cli
-        npm install @capacitor/core @capacitor/android @capacitor/camera
+        npm install -g @capacitor/cli@latest
+        npm install @capacitor/core @capacitor/android @capacitor/camera @capacitor/splash-screen
         
     - name: Initialize Capacitor
       run: |
-        npx cap init "iOS Camera App" "com.iosCamera.app" --web-dir=dist --npm-client=npm
+        npx cap init "iOS Camera App" "com.iosCamera.app" --web-dir=dist
         
     - name: Add Android platform
       run: npx cap add android
       
-    - name: Copy web assets
-      run: npx cap copy android
-      
-    - name: Sync Capacitor
-      run: npx cap sync android
+    - name: Copy web assets and sync
+      run: |
+        npx cap copy android
+        npx cap sync android
       
     - name: Set gradlew permissions
       run: |

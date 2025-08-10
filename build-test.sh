@@ -24,5 +24,16 @@ else
     exit 1
 fi
 
+# Test Capacitor init (optional - only if you have Capacitor installed)
+if command -v cap >/dev/null 2>&1; then
+    echo "🔍 Testing Capacitor init..."
+    # Clean up any existing capacitor config first
+    rm -rf android/ ios/ capacitor.config.ts
+    npx cap init "iOS Camera App" "com.iosCamera.app" --web-dir=dist
+    echo "✅ Capacitor init test successful!"
+else
+    echo "⚠️  Capacitor CLI not found locally (this is OK - GitHub Actions will install it)"
+fi
+
 echo "🎉 Build test completed successfully!"
 echo "📝 Now you can push to GitHub and the Actions will build your APK!"
