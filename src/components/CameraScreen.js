@@ -19,7 +19,8 @@ const CameraScreen = ({
   isRecording,
   onToggleRecording,
   cameraMode,
-  onCameraModeChange
+  onCameraModeChange,
+  cameraReady
 }) => {
   const [flashMode, setFlashMode] = useState('auto'); // auto, on, off
   const [isFrontCamera, setIsFrontCamera] = useState(false);
@@ -36,9 +37,12 @@ const CameraScreen = ({
     config: { duration: 150 }
   });
 
-  // Initialize camera
+  // Initialize camera when ready or camera settings change
   useEffect(() => {
-    initializeCamera();
+    if (cameraReady || !isCapacitor()) {
+      console.log('Initializing camera with ready state:', cameraReady);
+      initializeCamera();
+    }
     return () => {
       // Cleanup for web
       if (streamRef.current) {
@@ -49,7 +53,7 @@ const CameraScreen = ({
         CameraPreview.stop().catch(console.error);
       }
     };
-  }, [isFrontCamera]);
+  }, [isFrontCamera, cameraReady]);
 
 
 

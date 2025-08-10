@@ -18,6 +18,7 @@ const App = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [cameraMode, setCameraMode] = useState('photo'); // photo, video, portrait
   const [permissionRequested, setPermissionRequested] = useState(false);
+  const [cameraReady, setCameraReady] = useState(false);
 
   // Request camera permissions on app start for mobile
   useEffect(() => {
@@ -42,6 +43,7 @@ const App = () => {
             if (currentPermissions.camera === 'granted') {
               needsPermission = false;
               permissionsGranted = true;
+              setCameraReady(true);
               console.log('✅ Camera permissions already granted');
             }
           } catch (error) {
@@ -63,6 +65,8 @@ const App = () => {
               if (permissionResult.camera === 'granted') {
                 permissionsGranted = true;
                 console.log('🎉 Camera permissions granted by user!');
+                // Signal that camera is ready to initialize
+                setCameraReady(true);
               } else if (permissionResult.camera === 'denied') {
                 console.log('❌ Camera permissions denied by user');
               } else if (permissionResult.camera === 'prompt-with-rationale') {
@@ -73,6 +77,7 @@ const App = () => {
                 });
                 if (secondRequest.camera === 'granted') {
                   permissionsGranted = true;
+                  setCameraReady(true);
                 }
               }
             } catch (error) {
@@ -101,6 +106,8 @@ const App = () => {
             console.warn('⚠️ Camera permissions not granted');
           } else {
             console.log('🎉 Camera permissions successfully obtained');
+            // Ensure camera ready state is set
+            setCameraReady(true);
           }
         } catch (error) {
           console.error('💥 Error requesting initial permissions:', error);
@@ -134,6 +141,7 @@ const App = () => {
           onToggleRecording={handleToggleRecording}
           cameraMode={cameraMode}
           onCameraModeChange={setCameraMode}
+          cameraReady={cameraReady}
         />
       )}
       
